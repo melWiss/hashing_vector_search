@@ -3,6 +3,7 @@ import 'dart:collection';
 import 'dart:math';
 
 import 'package:hashing_vector_search/src/constants.dart';
+import 'package:hashing_vector_search/src/document.dart';
 
 class HashUtils {
   FutureOr<num> hashWord(String input) {
@@ -17,15 +18,20 @@ class HashUtils {
     return hash;
   }
 
-  FutureOr<List<List<num>>> hashText(String input) async {
+  FutureOr<List<Document>> hashText(String input, {String? path}) async {
     var h = input.toLowerCase();
     h = h.replaceAll(r'[^a-zA-Z]', ' ');
     List<String> tokens = h.split(' ');
-    List<List<num>> vectors = [];
+    List<Document> docs = [];
     List<num> vector = [];
     for (var element in tokens) {
       if (vector.length >= kVectorSpaceDimension) {
-        vectors.add(vector.toList());
+        docs.add(
+          Document(
+            path: path,
+            vector: vector.toList(),
+          ),
+        );
         vector.clear();
       }
       vector.add(await hashWord(element));
@@ -36,8 +42,13 @@ class HashUtils {
       }
     }
     if (vector.length == kVectorSpaceDimension) {
-      vectors.add(vector);
+      docs.add(
+        Document(
+          path: path,
+          vector: vector.toList(),
+        ),
+      );
     }
-    return vectors;
+    return docs;
   }
 }

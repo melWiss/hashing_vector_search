@@ -1,27 +1,29 @@
 import 'dart:async';
 
 import 'package:hashing_vector_search/src/constants.dart';
+import 'package:hashing_vector_search/src/document.dart';
 import 'package:hashing_vector_search/src/hash_utils/hash_utils.dart';
-import 'package:murmur3/murmur3.dart';
 
 class SentenceHashUtils extends HashUtils {
   @override
-  FutureOr<num> hashWord(String input) {
-    return murmur3a(input);
-  }
-
-  @override
-  FutureOr<List<List<num>>> hashText(String input) async {
+  FutureOr<List<Document>> hashText(String input, {String? path}) async {
     var h = input.toLowerCase();
     List<String> sentences = h.split(RegExp(r'''[^\w\s,'"]|\n'''));
     sentences.removeWhere((element) => element == "");
-    List<List<num>> vectors = [];
+    List<Document> docs = [];
     for (var sentence in sentences) {
+      sentence = sentence.trim();
       List<String> tokens = sentence.split(' ');
       List<num> vector = [];
       for (var element in tokens) {
         if (vector.length >= kVectorSpaceDimension) {
-          vectors.add(vector.toList());
+          docs.add(
+            Document(
+              path: path,
+              vector: vector.toList(),
+              sentence: sentence,
+            ),
+          );
           vector.clear();
         }
         vector.add(await hashWord(element));
@@ -32,9 +34,15 @@ class SentenceHashUtils extends HashUtils {
         }
       }
       if (vector.length == kVectorSpaceDimension) {
-        vectors.add(vector);
+        docs.add(
+          Document(
+            path: path,
+            vector: vector.toList(),
+            sentence: sentence,
+          ),
+        );
       }
     }
-    return vectors;
+    return docs.toSet().toList();
   }
 }

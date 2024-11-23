@@ -15,11 +15,11 @@ class TrainDbUtils extends DbUtils {
     for (var element in trainFiles) {
       print('TRAINGING ON:: ${element.path}');
       File file = File(element.path);
-      List<List<num>> vectors =
-          await hashUtils.hashText(file.readAsStringSync());
-      data.addAll(vectors.map(
-        (e) => Document(path: element.path, vector: e),
-      ));
+      List<Document> docs = await hashUtils.hashText(
+        file.readAsStringSync(),
+        path: element.path,
+      );
+      data.addAll(docs);
       print('FINISHED TRAINING ON:: ${element.path}');
     }
     writeDb(data);

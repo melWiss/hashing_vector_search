@@ -8,7 +8,7 @@ class QueryDbUtils extends DbUtils {
   FutureOr<List<Document>> query(String query, {int? k}) async {
     List<Document> data = loadDb();
     return kNearestNeighbors(
-        documents: data, target: (await hashUtils.hashText(query)).first, k: k);
+        documents: data, target: (await hashUtils.hashText(query)).first.vector, k: k);
   }
 
   /// Finds the k closest vectors to a target vector using k-NN.

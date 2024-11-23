@@ -10,13 +10,22 @@ void main(List<String> arguments) async {
     TrainDbUtils trainDbUtils = TrainDbUtils(dataset: Directory('./files'));
     await trainDbUtils.train();
   } else if (arguments[0] == 'query') {
+    var jsonEncoder = JsonEncoder.withIndent('  ');
     String query = arguments[1];
     // do the query;
     QueryDbUtils queryDbUtils = QueryDbUtils();
-    var docs = await queryDbUtils.query(query, k: 5);
-    var paths = docs.map((e) => e.path);
-    // var vectors = docs.map((e) => e.vector);
-    print('The result paths is: ${jsonEncode(paths.toSet().toList())}');
-    // print('The result vectors is: ${jsonEncode(vectors.toSet().toList())}');
+    int k = 10;
+    int indexk = arguments.indexOf("k");
+    if (indexk != -1) {
+      k = int.parse(arguments[indexk + 1]);
+    }
+    var docs = await queryDbUtils.query(query, k: k);
+    List<Map<String, dynamic>> docsObject = docs
+        .map<Map<String, dynamic>>(
+          (e) => e.toMap(),
+        )
+        .toList();
+    print('The results for: "$query"');
+    print(jsonEncoder.convert(docsObject));
   }
 }
