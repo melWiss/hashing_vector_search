@@ -1,13 +1,14 @@
 library hashing_vector_search;
 
+import 'dart:async';
 import 'dart:collection';
 import 'dart:convert';
 import 'dart:io';
 import 'dart:math';
-
 import 'package:collection/collection.dart';
+import 'package:murmur3/murmur3.dart';
 
-const int kVectorSpaceDimension = 1024;
+const int kVectorSpaceDimension = 16;
 
 class Document {
   final String path;
@@ -64,7 +65,7 @@ class Document {
 }
 
 class HashUtils {
-  num hashWord(String input) {
+  FutureOr<num> hashWord(String input) {
     var h = input.toLowerCase();
     h = h.replaceAll(r'[^a-zA-Z]', '');
     SplayTreeSet<String> hset = SplayTreeSet.from(h.split(''));
@@ -76,10 +77,10 @@ class HashUtils {
     return hash;
   }
 
-  List<List<num>> hashText(String input) {
+  FutureOr<List<List<num>>> hashText(String input) async {
     var h = input.toLowerCase();
     h = h.replaceAll(r'[^a-zA-Z]', ' ');
-    List<String> tokens = input.split(' ');
+    List<String> tokens = h.split(' ');
     List<List<num>> vectors = [];
     List<num> vector = [];
     for (var element in tokens) {
@@ -87,7 +88,7 @@ class HashUtils {
         vectors.add(vector.toList());
         vector.clear();
       }
-      vector.add(hashWord(element));
+      vector.add(await hashWord(element));
     }
     if (vector.isNotEmpty && vector.length < kVectorSpaceDimension) {
       while (vector.length < kVectorSpaceDimension) {
@@ -101,9 +102,53 @@ class HashUtils {
   }
 }
 
+class SentenceHashUtils extends HashUtils {
+  @override
+  FutureOr<num> hashWord(String input) {
+    return murmur3a(input);
+  }
+
+  @override
+  FutureOr<List<List<num>>> hashText(String input) async {
+    var h = input.toLowerCase();
+    List<String> sentences = h.split(RegExp(r'''[^\w\s,'"]|\n'''));
+    sentences.removeWhere((element) => element == "");
+    List<List<num>> vectors = [];
+    for (var sentence in sentences) {
+      List<String> tokens = sentence.split(' ');
+      List<num> vector = [];
+      for (var element in tokens) {
+        if (vector.length >= kVectorSpaceDimension) {
+          vectors.add(vector.toList());
+          vector.clear();
+        }
+        vector.add(await hashWord(element));
+      }
+      if (vector.isNotEmpty && vector.length < kVectorSpaceDimension) {
+        while (vector.length < kVectorSpaceDimension) {
+          vector.add(0);
+        }
+      }
+      if (vector.length == kVectorSpaceDimension) {
+        vectors.add(vector);
+      }
+    }
+    return vectors;
+  }
+}
+
+class MurMur3HashUtils extends HashUtils {
+  @override
+  FutureOr<num> hashWord(String input) {
+    var h = input.toLowerCase();
+    h = h.replaceAll(r'[^a-zA-Z]', '');
+    return murmur3a(h);
+  }
+}
+
 abstract class DbUtils {
   final File db = File('./db.json');
-  final HashUtils hashUtils = HashUtils();
+  final HashUtils hashUtils = SentenceHashUtils();
 
   String loadDbFile() {
     if (!db.existsSync()) {
@@ -126,20 +171,21 @@ class TrainDbUtils extends DbUtils {
   final Directory dataset;
   TrainDbUtils({required this.dataset});
 
-  void train() {
+  FutureOr<void> train() async {
     List<Document> data = loadDb();
     List<FileSystemEntity> trainFiles = dataset.listSync();
     for (var element in trainFiles) {
       print('TRAINGING ON:: ${element.path}');
       File file = File(element.path);
-      List<List<num>> vectors = hashUtils.hashText(file.readAsStringSync());
+      List<List<num>> vectors =
+          await hashUtils.hashText(file.readAsStringSync());
       data.addAll(vectors.map(
         (e) => Document(path: element.path, vector: e),
       ));
       print('FINISHED TRAINING ON:: ${element.path}');
     }
     writeDb(data);
-    print('DONE TRAINGING!!!');
+    print('DONE TRAINGING!!!##k=${data.length}');
   }
 
   void writeDb(List<Document> data) {
@@ -153,10 +199,10 @@ class TrainDbUtils extends DbUtils {
 }
 
 class QueryDbUtils extends DbUtils {
-  List<Document> query(String query, {int k = 3}) {
+  FutureOr<List<Document>> query(String query, {int? k}) async {
     List<Document> data = loadDb();
     return kNearestNeighbors(
-        documents: data, target: hashUtils.hashText(query).first, k: k);
+        documents: data, target: (await hashUtils.hashText(query)).first, k: k);
   }
 
   /// Finds the k closest vectors to a target vector using k-NN.
@@ -169,8 +215,9 @@ class QueryDbUtils extends DbUtils {
   List<Document> kNearestNeighbors({
     required List<Document> documents,
     required List<num> target,
-    required int k,
+    int? k,
   }) {
+    k ??= documents.length;
     if (k <= 0 || k > documents.length) {
       throw ArgumentError(
           'k must be between 1 and the size of the vector list. k = $k, documents.length = ${documents.length}');

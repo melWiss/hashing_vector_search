@@ -14,7 +14,7 @@
             "name": "query",
             "request": "launch",
             "type": "dart",
-            "args": ["query", "hello sir how you doing?"]
+            "args": ["query", "next steps"]
         }
     ]
 }

@@ -1,0 +1,38 @@
+The portfolio: how was it created?
+Hello everyone, my name is Oussama Maatallah a software engineer and finally I'll be sharing with you my work on this portfolio webapp that took me around 3 years to make (due to procrastinating for sure). 
+
+3 years to make a portfolio? Isn't that a lot of time?
+Absolutely yes, it's a hell lot of time to make a portfolio/blog webapp and the reason for that I wanted it to do some special stuff
+
+be different
+not just a portfolio but also a blog
+use stuff that I love to make the webapp
+I wanted it to be special, in order to make it so, it needed to have some not usual technical decisions
+and yea I actually didn't really find time for it, working by day, studying by night, working on #FlutterTunis community stuff, I didn't even have a time for myself
+Why the blog part?
+No specific reason, I always wanted to have a blog since I was a kid, I didn't know how back then but now I know.
+
+So, how different is it?
+First of all, let's talk about how you usually make a kickass portfolio/blog website.
+
+
+
+Usually, you'd go with using WordPress or other famous CMSs available out there, they handle pretty much everything, from designing the website to SEO handling and monitoring, it's just the full package, there's no "techy" development requirement and it's fast. My webapp on the other hand, as you see I'm using the "webapp" word instead of website, is using a completely different stack, unusual stack for blogs creation and it's the following:
+
+ReactTs
+Firebase
+The reason why this stack is considered unusual is because this stack isn't made for creating websites in general, but to make web applications. Now you might ask what's the difference between a webapp and a website? The answer is the following:
+
+A WebApp is a web application that has an applicative goal like data processing/calculation and it's dynamic, interactive and realtime
+A Website is a series of web pages, that are usually static, linked together to form a chain of pages which we can call a site, main purpose usually is to create blogs and discoverability on the search engines like Google or Bing
+Okay so it's a webapp, but what kind of processing/calculation are we talking about here?
+Well this is a very good question and it's appropriate is going to be long, so the answer will be divided into a series of blog posts. As a short answer is that there's no heavy calculation/processing and those stuff aren't visible for the user or the visitor but they're available for the admin.
+
+You mentioned that you were doing a Flutter community stuff, but why you didn't use Flutter instead of ReactTs?
+This is also a very good question, the short answer is "for server side rendering". React support server side rendering which is a way to render the react web app on the server instead the browser so that the search engines or bots can index it and read it's content. This feature doesn't exist in Flutter since it's really main purpose is the application part, it's not meant to be rendered on the server.
+
+But, at the end, I didn't use that feature at all and made the server side rendering part manually. Why? simply for the next version of the portfolio will be in Flutter! So each part of the whole system has it's own part and used React just for the frontend part so it could be replaceable by something else in the future.
+
+Next steps??
+I'll be posting on this blog regularily on how you can make something similar step by step and share those blogs on social networks (Linkedin, twitter). See ya later folks!
+

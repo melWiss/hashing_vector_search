@@ -1,0 +1,41 @@
+Portfolio
+It's a portfolio and a blog web app that generally talks the projects that I worked on and blog posts that are related to technologies and so on.
+
+It is consisted of different pages which are:
+
+Blog page, which contains a mix of my blog posts and projects that I worked on.
+Portfolio page, which is detected to showcase my work either professional or personal
+Resume page, in which I share my resume
+Contact me page, if someone needed my contact he will find it there
+And for sure an admin page to showcase how I'm managing this little web app
+Now, before jumping to the functionalities of each page, let's talk about the technologies used.
+
+Technical infrastructure of the app
+This app is built with the help of ReactTs and Firebase, and it's consistent of three parts which are
+
+Frontend web client made with ReactTs for the user to use and navigate through the app
+Cloud Firestore, Cloud Storage and Authentication services of Firebase to save data and manage users
+Server frontend part that handles bots calls (generally search engines like Google or Bing)
+Now let's talk about the features one by one.
+
+Blog list page
+ The blog list page is where you will find the different blog posts and projects that are made by me. Technically speaking, the project post is actually a blog post that has a project category, and the reason behind this decision is that the final output of a project post will be 100% identical to a blog post so I said why not doing it as a blog post to avoid time wasting and unnecessary complexity after all they're both posts with the goal to be indexed by the search engines. Posts also have categories in which they will be used in the future (V2) for filtiring if the user has some specific categories he wants to read about, it also contains a title, short description, the main text itself and user comments if they want to comment on the posts.
+
+Portfolio page
+ This page is the same as the blogs page except that it only shows the projects.
+
+Resume page
+ This one page contains my resume and it's downloadable as a pdf document.
+
+Contact me page
+ This page contains my contact info for anyone who wants to be in touch.
+
+Search dialog
+ This is where the user can tap keywords and will be searched through the whole app.
+
+Admin page
+ This is where everything is being managed, from blog posts and projects to users. We can also edit the resume and contact me pages from here.
+
+Next steps
+For the V2 I'll be ditching ReactTs and use Flutter instead for client frontend and the reasons behind this decision is simple, I'm a Flutter developer after all, at first I wanted to use the server side rendering of React but then I realised that I don't actually need it, I'm doing that part manually through Cloud Functions, so it's nothing wrong with react, it was just a demo on using the dart's BLoC pattern in a React app and it went smooth, now we will be shifting to Flutter and have a better experience on mobile and maintain the enjoyability on desktop web. I'll be posting in the future step by step guide on the tech stack of the app and how anyone can create something similar. And that's all folks.
+
