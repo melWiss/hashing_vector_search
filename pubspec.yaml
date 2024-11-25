@@ -10,7 +10,16 @@ environment:
 dependencies:
   murmur3: ^2.1.0
   collection: ^1.19.1
+  ffi: ^2.1.3
   # path: ^1.8.0
 
 dev_dependencies:
   lints: ^4.0.0
+  ffigen: ^16.0.0
+
+ffigen:
+  output: 'lib/src/tflite_embedder/tflite_embedder_bindings.dart'  # Path to the generated Dart file
+  name: 'TFLiteEmbedderBindings'
+  headers:
+    entry-points:
+      - 'c_embedder/tflite_embedder.h'  # Path to your C header file

@@ -25,7 +25,10 @@ void main(List<String> arguments) async {
           (e) => e.toMap(),
         )
         .toList();
-    print('The results for: "$query"');
-    print(jsonEncoder.convert(docsObject));
+    var output = {
+      "message": 'The results for: "$query"',
+      "result": docsObject,
+    };
+    print(jsonEncoder.convert(output));
   }
 }

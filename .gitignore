@@ -4,3 +4,6 @@
 db.json
 program
 result.json
+hash
+embedding_model.tflite
+hashed_embedding_model_float.tflite

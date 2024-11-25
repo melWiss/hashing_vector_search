@@ -3,11 +3,11 @@ import 'dart:io';
 
 import 'package:hashing_vector_search/src/document.dart';
 import 'package:hashing_vector_search/src/hash_utils/hash_utils.dart';
-import 'package:hashing_vector_search/src/hash_utils/sentence_hash_utils.dart';
+import 'package:hashing_vector_search/src/hash_utils/tflite_hash_utils.dart';
 
 abstract class DbUtils {
   final File db = File('./db.json');
-  final HashUtils hashUtils = SentenceHashUtils();
+  final HashUtils hashUtils = TfliteHashUtils();
 
   String loadDbFile() {
     if (!db.existsSync()) {

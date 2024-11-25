@@ -1,0 +1,6 @@
+{
+    "files.associations": {
+        "c_api.h": "c",
+        "tflite_embedder.h": "c"
+    }
+}
